@@ -3,7 +3,8 @@
     <textarea id="CodeInput" placeholder="Input your Code here!" style="height: 40%; width: 40%;"></textarea>
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
     <pre id="Visualise"></pre>
-    <pre id="InstructionSet" style="background-color: rgb(187, 187, 187); color: rgb(0, 0, 0); position: absolute; right: 1%; top: 0.1%; height: 45%; width: 15%; font-size: 15px; font-family: cursive;"></pre>
+    <pre id="VStacks"></pre>
+    <pre id="InstructionVisualiser" style="background-color: rgb(187, 187, 187); color: rgb(0, 0, 0); position: absolute; right: 1%; top: 0.1%; height: 45%; width: 15%; font-size: 15px; font-family: cursive;"></pre>
 
 
 </body>
@@ -14,14 +15,29 @@
     // ~~1a. Make it so you can click tab in there~~
     // ~~2. get tabs and spaces (ignore everything else)~~
     // ~~3. a way to see spaces and tabs (important else its hard to make programs)~~~~~ half working, it shows T for tab, s,and l
-    // 4. simple push stack, addition, subtraction, printing
+    // ~~4a. simple push~~
+    // 4b. Side mission gonna add stacks or try to so I can inplement addition and what not :D
+    // 4c, addition, subtraction, printing
     // 5. add more features
     // 6. make it look pretty
+
+    let Stacks = []
+    let Instructions = []
+
+    let btn = document.getElementById("RunCode")
+
+    let VStacks = document.getElementById("VStacks")
+
+    let CodeInput = document.getElementById("CodeInput")
+
+    let InstructionVisualiser = document.getElementById("InstructionVisualiser")
+
 
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
         let pointer = 0;
-        InstructionSet.textContent=""
+        InstructionVisualiser.textContent=""
+        Instructions = []
 
         function next() {
             return code[pointer++];
@@ -39,27 +55,23 @@
                     pointer++;
                 }
 
-                pointer++;
+                pointer++; 
 
                 let number = parseInt(binary, 2);
-
-                if (sign === "\t"){
-                    number*= -1;
-                }
-                if (number != NaN){
-                    InstructionSet.textContent+=`\nPush ${number}`
-                }else{
-                    InstructionSet.textContent+=`\nPush`
+                if (binary.length> 0 && !isNaN(number)){
+                    if (sign === "\t"){
+                        number*= -1;
+                    }
+                
+                    InstructionVisualiser.textContent+=`\nPush ${number}`
+                    Instructions.push("Push")
+                    Instructions.push(number)
                 }
             }
         }
     }
 
-    let btn = document.getElementById("RunCode")
 
-    let CodeInput = document.getElementById("CodeInput")
-
-    let InstructionSet = document.getElementById("InstructionSet")
 
     CodeInput.addEventListener('keydown', function (event) {
         if (event.key=='Tab'){
@@ -72,16 +84,29 @@
         }
     })
 
+
+
     CodeInput.addEventListener('input', function() {
         Visualise();
-        let instruction = 0;
         update()
     })
 
 
+
     btn.addEventListener('click', (event) => {
         
+        while ( Instructions.length > 0 ){
+            if (Instructions[0] == "Push"){
+                Instructions.shift()
+                Stacks.push(`[${Instructions[0]}]`)
+                Instructions.shift()
+            }
+        }
+        VStacks.textContent = `Stacks: \n${Stacks}`
+
     })
+
+
 
     function Visualise() {
         const Code = CodeInput.value;
@@ -92,5 +117,7 @@
                 .replaceAll("\n", "L\n");
         
     }
+
+
 
 </script>
