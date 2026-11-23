@@ -3,6 +3,7 @@
     <textarea id="CodeInput" placeholder="Input your Code here!" style="height: 40%; width: 40%;"></textarea>
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
     <pre id="Visualise"></pre>
+    <pre id="InstructionSet" style="background-color: rgb(187, 187, 187); color: rgb(0, 0, 0); position: absolute; right: 1%; top: 0.1%; height: 45%; width: 15%; font-size: 15px; font-family: cursive;"></pre>
 
 
 </body>
@@ -17,9 +18,36 @@
     // 5. add more features
     // 6. make it look pretty
 
+    function next() {
+            return code[pointer++];
+    }
+        function update(){
+        while (pointer < code.length){
+            if (next() === " " && next() === " ") {
+                let sign = next();
+                let binary = "";
+                while (pointer < code.length && code[pointer] !== "\n"){
+                    binary += code[pointer] === "\t" ? "1" : "0";
+                    pointer++;
+                }
+
+                pointer++;
+
+                let number = parseInt(binary, 2);
+
+                if (sign === "\t"){
+                    number*= -1;
+                }
+                InstructionSet.textContent+=`\nPush ${number}`
+            }
+        }
+    }
+
     let btn = document.getElementById("RunCode")
 
     let CodeInput = document.getElementById("CodeInput")
+
+    let InstructionSet = document.getElementById("InstructionSet")
 
     CodeInput.addEventListener('keydown', function (event) {
         if (event.key=='Tab'){
@@ -34,38 +62,15 @@
 
     CodeInput.addEventListener('input', function() {
         Visualise();
+        let code = CodeInput.value.replace(/[^ \t\n]/g, "");
+        let pointer = 0;
+        let instruction = 0;
+        InstructionSet.textContent=""
+        update()
     })
 
 
     btn.addEventListener('click', (event) => {
-
-        let code = CodeInput.value.replace(/[^ \t\n]/g, "");
-        let pointer = 0;
-
-        function next() {
-            return code[pointer++];
-        }
-        while (pointer < code.length){
-            if (next() === " " && next() === " ") {
-                let sign = next();
-
-                let binary = "";
-
-                while (pointer < code.length && code[pointer] !== "\n"){
-                    binary += code[pointer] === "\t" ? "1" : "0";
-                    pointer++;
-                }
-
-                pointer++;
-
-                let number = parseInt(binary, 2);
-
-                if (sign === "\t"){
-                    number*= -1;
-                }
-                console.log(number)
-            }
-        }
         
     })
 
