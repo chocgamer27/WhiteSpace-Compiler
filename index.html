@@ -50,8 +50,7 @@
         }
 
 
-        function StackManipulation (){ // my solution to fixing this ass code is to make a function for 
-                                         // stack manip, arthimetic, heapacess, flow controll, i/o :D
+        function StackManipulation (){ 
             let Second = next()
             //" ": "Push",
             //"\t ": "Copy",
@@ -60,41 +59,41 @@
             //"\n\n": "Drop",
             //"\n ": "Dup"
 
-        if (Second === " "){
-            console.log("push..")
-            let binary = ""
-            let sign = next()
+            if (Second === " "){
 
-            while (pointer < code.length && peek() != `\n`){
-                binary += next() === "\t" ? "1" : "0";
-            }
+                let binary = ""
+                let sign = next()
 
-            let number = parseInt(binary, 2)
-            if (sign === "\t"){
-                number*=-1
-            }
-            if (!isNaN(number)){
-                Instructions.push("Push", number);
-                InstructionVisualiser.textContent += `\nPush ${number} `;
-            }
+                while (pointer < code.length && peek() != `\n`){
+                    binary += next() === "\t" ? "1" : "0";
+                }
 
-        } else if (Second === `\t`){
-            let Third = next()
-            if (Third=== " "){
-                console.log("Copy")
-            } else if (Third === `\n`){
-                console.log("Slide")
+                let number = parseInt(binary, 2)
+                if (sign === "\t"){
+                    number*=-1
+                }
+                if (!isNaN(number)){
+                    Instructions.push("Push", number);
+                    InstructionVisualiser.textContent += `\nPush ${number} `;
+                }
+
+            } else if (Second === `\t`){
+                let Third = next()
+                if (Third=== " "){
+                    console.log("Copy")
+                } else if (Third === `\n`){
+                    console.log("Slide")
+                }
+            } else if (Second=== `\n`){
+                let Third = next()
+                if (Third === `\t`){
+                    console.log("Swap")
+                } else if (Third === `\n`){
+                    console.log("Drop")
+                } else if (Third ===  " "){
+                    console.log("Dup")
+                }
             }
-        } else if (Second=== `\n`){
-            let Third = next()
-            if (Third === `\t`){
-                console.log("Swap")
-            } else if (Third === `\n`){
-                console.log("Drop")
-            } else if (Third ===  " "){
-                console.log("Dup")
-            }
-        }
         }
 
 
