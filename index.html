@@ -43,13 +43,16 @@
             return code[pointer++];
         }
         function back() {
-            return code[pointer];
+            return code[pointer--];
+        }
+        function peek() {
+            return code[pointer]
         }
 
-        function StackManipulation (pointer){ // my solution to fixing this ass code is to make a function for 
+
+        function StackManipulation (){ // my solution to fixing this ass code is to make a function for 
                                          // stack manip, arthimetic, heapacess, flow controll, i/o :D
             let Second = next()
-            let Third = next()
             //" ": "Push",
             //"\t ": "Copy",
             //"\t\n": "Slide",
@@ -58,17 +61,32 @@
             //"\n ": "Dup"
 
         if (Second === " "){
-            // third if its a tab would mean its negative and if its a space its positive
+            console.log("push..")
+            let binary = ""
+            let sign = next()
 
-            Instructions.push("Push");
-            InstructionVisualiser.textContent += `\nPush`;
+            while (pointer < code.length && peek() != `\n`){
+                binary += next() === "\t" ? "1" : "0";
+            }
+
+            let number = parseInt(binary, 2)
+            if (sign === "\t"){
+                number*=-1
+            }
+            if (!isNaN(number)){
+                Instructions.push("Push", number);
+                InstructionVisualiser.textContent += `\nPush ${number} `;
+            }
+
         } else if (Second === `\t`){
+            let Third = next()
             if (Third=== " "){
                 console.log("Copy")
             } else if (Third === `\n`){
                 console.log("Slide")
             }
         } else if (Second=== `\n`){
+            let Third = next()
             if (Third === `\t`){
                 console.log("Swap")
             } else if (Third === `\n`){
