@@ -30,25 +30,7 @@
 
     let CodeInput = document.getElementById("CodeInput")
 
-    let InstructionVisualiser = document.getElementById("InstructionVisualiser")
-
-
-    function StackManipulation (pointer){ // my solution to fixing this ass code is to make a function for 
-                                    // stack manip, arthimetic, heapacess, flow controll, i/o :D
-        let operations = {
-            " ": "Push",
-             "\n ": "Dup",
-            "\t ": "Copy",
-            "\n\t": "Swap",
-            "\n\n": "Drop",
-            "\t\n": "Slide"
-        };
-
-        
-
-
-    }
-
+    let InstructionVisualiser = document.getElementById("InstructionVisualiser")    
 
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
@@ -60,6 +42,42 @@
         function next() {
             return code[pointer++];
         }
+        function back() {
+            return code[pointer];
+        }
+
+        function StackManipulation (pointer){ // my solution to fixing this ass code is to make a function for 
+                                         // stack manip, arthimetic, heapacess, flow controll, i/o :D
+            let Second = next()
+            let Third = next()
+            //" ": "Push",
+            //"\t ": "Copy",
+            //"\t\n": "Slide",
+            //"\n\t": "Swap",
+            //"\n\n": "Drop",
+            //"\n ": "Dup"
+
+        if (Second === " "){
+            // third if its a tab would mean its negative and if its a space its positive
+
+            Instructions.push("Push");
+            InstructionVisualiser.textContent += `\nPush`;
+        } else if (Second === `\t`){
+            if (Third=== " "){
+                console.log("Copy")
+            } else if (Third === `\n`){
+                console.log("Slide")
+            }
+        } else if (Second=== `\n`){
+            if (Third === `\t`){
+                console.log("Swap")
+            } else if (Third === `\n`){
+                console.log("Drop")
+            } else if (Third ===  " "){
+                console.log("Dup")
+            }
+        }
+        }
 
 
         while (pointer < code.length){
@@ -68,19 +86,7 @@
 
             if (first === " "){
                 StackManipulation()
-
-                if (operations[operation] === "Dup"){
-                    InstructionVisualiser.textContent+=`\nDup`
-                    Instructions.push("Dup")
-                    Instructions.push(Stacks[Stacks.length])
-
-                } else if (operations[operation]){
-                    Instructions.push(operations[operation]);
-                    InstructionVisualiser.textContent += `\n${operations[operation]}`;
-                }
-            }
-
-             else if (first === "\t" && next() === " "){
+            } else if (first === "\t" && next() === " "){
                 
                 let operation = code.slice(pointer, pointer+2);
                 pointer +=2;
