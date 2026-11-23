@@ -2,6 +2,7 @@
 
     <textarea id="CodeInput" placeholder="Input your Code here!"></textarea>
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
+    <pre id="Visualise"></pre>
 
 
 </body>
@@ -28,6 +29,7 @@
             this.value = this.value.substring(0,start) + `\t` + this.value.substring(end);
             this.selectionStart = this.selectionEnd = start + 1;
         }
+        Visualise()
     })
 
     btn.addEventListener('click', (event) => {
@@ -45,5 +47,13 @@
         }
         
     })
+
+    function Visualise() {
+        const Code = CodeInput.value;
+        document.getElementById("Visualise").textContent =
+            Code.replaceAll(" ", "S")
+                .replaceAll("\t", "T")
+                .replaceAll("\n", "L\n");
+    }
 
 </script>
