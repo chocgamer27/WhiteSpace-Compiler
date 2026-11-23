@@ -71,19 +71,18 @@
 
         function StackManipulation (){ 
             let Second = next()
-            //" ": "Push",
-            //"\t ": "Copy",
-            //"\t\n": "Slide",
+            //" ": "Push",~~
+            //"\t ": "Copy",~~
+            //"\t\n": "Slide",~~
             //"\n\t": "Swap",
             //"\n\n": "Drop",
             //"\n ": "Dup"
 
             if (Second === " "){
                 ReadNumber("Push")
-
             } else if (Second === `\t`){
                 let Third = next()
-                if (Third=== " "){ // reasearching how copy works, its like the exact same idea as push but different prefix
+                if (Third=== " "){
                     ReadNumber("Copy")
                 } else if (Third === `\n`){
                     ReadNumber("Slide")
@@ -151,63 +150,22 @@
 
 
 
-    btn.addEventListener('click', (event) => {
+    btn.addEventListener('click', (event) => { // --- EXECUTOR
+        // Stack Management
+        // Push, (number)
+        // Copy, (number)
+        // Slide, (number)
+        // Dup,
+        // Swap,
+        // Drop -- (discard)
+        // Math stuff
+        // add, sub, mult, div, mod
+        
         
         while ( Instructions.length > 0 ){
             console.log(Instructions[0])
             console.log(Stacks)
-            if (Instructions[0] == "Push"){
-                Instructions.shift()
-                Stacks.push(Number(Instructions[0]))
-                Instructions.shift()
-            } else if (Instructions[0] == "Dup"){
-                Instructions.shift()
-                Stacks.push(Number(Instructions[0]))
-                Instructions.shift()
-            } else if (Instructions[0] == "Add"){
-                if (Stacks.length>1){
-                    let number1 = Stacks.pop(Stacks.length-1)
-                    let number2 = Stacks.pop(Stacks.length)
-                    Stacks.push(number1+number2)
-                    Instructions.shift()
-                }
-            } else if (Instructions[0] == "Sub"){
-                if (Stacks.length>1){
-                    let number1 = Stacks.pop(Stacks.length-1)
-                    let number2 = Stacks.pop(Stacks.length)
-                    Stacks.push(number1-number2)
-                    Instructions.shift()
-                }
-            } else if (Instructions[0] == "Mul"){
-                if (Stacks.length>1){
-                    let number1 = Stacks.pop(Stacks.length-1)
-                    let number2 = Stacks.pop(Stacks.length)
-                    Stacks.push(number1*number2)
-                    Instructions.shift()
-                }
-            } else if (Instructions[0] == "Div"){
-                if (Stacks.length>1){
-                    let number1 = Stacks.pop(Stacks.length-1)
-                    if (number1!=0){
-                        let number2 = Stacks.pop(Stacks.length)
-                        Stacks.push(Math.round(number1/number2))
-                        Instructions.shift()
-                    }
-                }
-            } else if (Instructions[0] == "Mod"){
-                if (Stacks.length>1){
-                    let number1 = Stacks.pop(Stacks.length-1)
-                    if (number1!=0){
-                        let number2 = Stacks.pop(Stacks.length)
-                        Stacks.push(number1%number2)
-                        Instructions.shift()
-                    }
-                }
-            }
-            VStacks.textContent = `Stacks: \n`
-            for (let i = 0; Stacks.length > i; i++){
-                VStacks.textContent = `[${Stacks[i]}]`
-            }
+            
         }
 
     })
