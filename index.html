@@ -8,9 +8,9 @@
 
 <script>
     // steps to make the whitespace compiler
-    // 1. simple interface and ui that works'
-    // 1a. Make it so you can click tab in there
-    // 2. get tabs and spaces (ignore everything else)
+    // ~~1. simple interface and ui that works'~~
+    // ~~1a. Make it so you can click tab in there~~
+    // ~~2. get tabs and spaces (ignore everything else)~~
     // 3. a way to see spaces and tabs (important else its hard to make programs)
     // 4. simple push stack, addition, subtraction, printing
     // 5. add more features
@@ -31,8 +31,17 @@
     })
 
     btn.addEventListener('click', (event) => {
+
         for (let i=0; i < CodeInput.value.length; i++){
-            console.log(CodeInput.value[i])
+
+            let AsciCC = CodeInput.value[i].charCodeAt(0)
+
+            if (AsciCC == `9`){
+                console.log("T")
+
+            } else if (AsciCC == `32`){
+                console.log("S")
+            }
         }
         
     })
