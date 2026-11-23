@@ -33,6 +33,23 @@
     let InstructionVisualiser = document.getElementById("InstructionVisualiser")
 
 
+    function StackManipulation (pointer){ // my solution to fixing this ass code is to make a function for 
+                                    // stack manip, arthimetic, heapacess, flow controll, i/o :D
+        let operations = {
+            " ": "Push",
+             "\n ": "Dup",
+            "\t ": "Copy",
+            "\n\t": "Swap",
+            "\n\n": "Drop",
+            "\t\n": "Slide"
+        };
+
+        
+
+
+    }
+
+
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
         let pointer = 0;
@@ -44,47 +61,15 @@
             return code[pointer++];
         }
 
-        next()
 
         while (pointer < code.length){
 
-            if (code[pointer-1] === ` `){
-                
-                let operation = code.slice(pointer, pointer+2);
-                pointer +=2;
+            let first = next();
 
-                let operations = {
-                    " ": "Push",
-                    "\n ": "Dup",
-                    "\t ": "Copy",
-                    "\n\t": "Swap",
-                    "\n\n": "Drop",
-                    "\t\n": "Slide"
-                };
+            if (first === " "){
+                StackManipulation()
 
-                if (operations[operation] === "Push"){
-                    let sign = next();
-                    let binary = "";
-
-                    while (pointer < code.length && code[pointer] !== "\n"){
-                        binary += code[pointer] === "\t" ? "1" : "0";
-                        pointer++;
-                    }
-
-                    pointer++; 
-
-                    let number = parseInt(binary, 2);
-                    if (binary.length> 0 && !isNaN(number)){
-                        if (sign === "\t"){
-                            number*= -1;
-                        }
-                    
-                        InstructionVisualiser.textContent+=`\nPush ${number}`
-                        Instructions.push("Push")
-                        Instructions.push(number)
-                    }
-
-                } else if (operations[operation] === "Dup"){
+                if (operations[operation] === "Dup"){
                     InstructionVisualiser.textContent+=`\nDup`
                     Instructions.push("Dup")
                     Instructions.push(Stacks[Stacks.length])
@@ -95,7 +80,7 @@
                 }
             }
 
-             else if (code[pointer-1] === `\t` && next() === " "){
+             else if (first === "\t" && next() === " "){
                 
                 let operation = code.slice(pointer, pointer+2);
                 pointer +=2;
