@@ -38,36 +38,81 @@
         let pointer = 0;
         InstructionVisualiser.textContent=""
         Instructions = []
+        Stacks = []
 
         function next() {
             return code[pointer++];
         }
 
+        next()
+
         while (pointer < code.length){
 
-            if (next() === " " && next() === " ") {
-
-                let sign = next();
-                let binary = "";
-
-                while (pointer < code.length && code[pointer] !== "\n"){
-                    binary += code[pointer] === "\t" ? "1" : "0";
-                    pointer++;
-                }
-
-                pointer++; 
-
-                let number = parseInt(binary, 2);
-                if (binary.length> 0 && !isNaN(number)){
-                    if (sign === "\t"){
-                        number*= -1;
-                    }
+            if (code[pointer-1] === ` `){
                 
-                    InstructionVisualiser.textContent+=`\nPush ${number}`
-                    Instructions.push("Push")
-                    Instructions.push(number)
+                let operation = code.slice(pointer, pointer+2);
+                pointer +=2;
+
+                let operations = {
+                    " ": "Push",
+                    "\n ": "Dup",
+                    "\t ": "Copy",
+                    "\n\t": "Swap",
+                    "\n\n": "Drop",
+                    "\t\n": "Slide"
+                };
+
+                if (operations[operation] === "Push"){
+                    let sign = next();
+                    let binary = "";
+
+                    while (pointer < code.length && code[pointer] !== "\n"){
+                        binary += code[pointer] === "\t" ? "1" : "0";
+                        pointer++;
+                    }
+
+                    pointer++; 
+
+                    let number = parseInt(binary, 2);
+                    if (binary.length> 0 && !isNaN(number)){
+                        if (sign === "\t"){
+                            number*= -1;
+                        }
+                    
+                        InstructionVisualiser.textContent+=`\nPush ${number}`
+                        Instructions.push("Push")
+                        Instructions.push(number)
+                    }
+
+                } else if (operations[operation] === "Dup"){
+                    InstructionVisualiser.textContent+=`\nDup`
+                    Instructions.push("Dup")
+                    Instructions.push(Stacks[Stacks.length])
+
+                } else if (operations[operation]){
+                    Instructions.push(operations[operation]);
+                    InstructionVisualiser.textContent += `\n${operations[operation]}`;
                 }
             }
+
+             else if (code[pointer-1] === `\t` && next() === " "){
+                
+                let operation = code.slice(pointer, pointer+2);
+                pointer +=2;
+
+                let operations = {
+                    "  ": "Add",
+                    " \t": "Sub",
+                    " \n": "Mul",
+                    "\t ": "Div",
+                    "\t\t": "Mod"
+                };
+                if (operations[operation]){
+                    Instructions.push(operations[operation]);
+                    InstructionVisualiser.textContent += `\n${operations[operation]}`;
+                }
+            }
+
         }
     }
 
@@ -81,6 +126,7 @@
             this.value = this.value.substring(0,start) + `\t` + this.value.substring(end);
             this.selectionStart = this.selectionEnd = start + 1;
             Visualise();
+            update();
         }
     })
 
@@ -88,7 +134,7 @@
 
     CodeInput.addEventListener('input', function() {
         Visualise();
-        update()
+        update();
     })
 
 
@@ -96,13 +142,61 @@
     btn.addEventListener('click', (event) => {
         
         while ( Instructions.length > 0 ){
+            console.log(Instructions[0])
+            console.log(Stacks)
             if (Instructions[0] == "Push"){
                 Instructions.shift()
-                Stacks.push(`[${Instructions[0]}]`)
+                Stacks.push(Number(Instructions[0]))
                 Instructions.shift()
+            } else if (Instructions[0] == "Dup"){
+                Instructions.shift()
+                Stacks.push(Number(Instructions[0]))
+                Instructions.shift()
+            } else if (Instructions[0] == "Add"){
+                if (Stacks.length>1){
+                    let number1 = Stacks.pop(Stacks.length-1)
+                    let number2 = Stacks.pop(Stacks.length)
+                    Stacks.push(number1+number2)
+                    Instructions.shift()
+                }
+            } else if (Instructions[0] == "Sub"){
+                if (Stacks.length>1){
+                    let number1 = Stacks.pop(Stacks.length-1)
+                    let number2 = Stacks.pop(Stacks.length)
+                    Stacks.push(number1-number2)
+                    Instructions.shift()
+                }
+            } else if (Instructions[0] == "Mul"){
+                if (Stacks.length>1){
+                    let number1 = Stacks.pop(Stacks.length-1)
+                    let number2 = Stacks.pop(Stacks.length)
+                    Stacks.push(number1*number2)
+                    Instructions.shift()
+                }
+            } else if (Instructions[0] == "Div"){
+                if (Stacks.length>1){
+                    let number1 = Stacks.pop(Stacks.length-1)
+                    if (number1!=0){
+                        let number2 = Stacks.pop(Stacks.length)
+                        Stacks.push(Math.round(number1/number2))
+                        Instructions.shift()
+                    }
+                }
+            } else if (Instructions[0] == "Mod"){
+                if (Stacks.length>1){
+                    let number1 = Stacks.pop(Stacks.length-1)
+                    if (number1!=0){
+                        let number2 = Stacks.pop(Stacks.length)
+                        Stacks.push(number1%number2)
+                        Instructions.shift()
+                    }
+                }
+            }
+            VStacks.textContent = `Stacks: \n`
+            for (let i = 0; Stacks.length > i; i++){
+                VStacks.textContent = `[${Stacks[i]}]`
             }
         }
-        VStacks.textContent = `Stacks: \n${Stacks}`
 
     })
 
