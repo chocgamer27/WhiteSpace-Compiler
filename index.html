@@ -49,6 +49,25 @@
             return code[pointer]
         }
 
+        function ReadNumber(Instruction){
+            let binary = ""
+            let sign = next()
+            while (pointer < code.length && peek() != `\n`){
+                binary += next() === "\t" ? "1" : "0";
+            }
+            next()
+
+            let number = parseInt(binary, 2)
+
+            if (sign === "\t"){number*=-1}
+
+            if (!isNaN(number) && binary.length>0){
+                Instructions.push(Instruction, number);
+                 InstructionVisualiser.textContent += `\n${Instruction} ${number} `;
+            } else {
+                InstructionVisualiser.textContent += `\n${Instruction}`;}
+        }
+
 
         function StackManipulation (){ 
             let Second = next()
@@ -60,48 +79,14 @@
             //"\n ": "Dup"
 
             if (Second === " "){
-
-                let binary = ""
-                let sign = next()
-
-                while (pointer < code.length && peek() != `\n`){
-                    binary += next() === "\t" ? "1" : "0";
-                }
-                next()
-
-                let number = parseInt(binary, 2)
-                if (sign === "\t"){
-                    number*=-1
-                }
-                if (!isNaN(number)){
-                    Instructions.push("Push", number);
-                    InstructionVisualiser.textContent += `\nPush ${number} `;
-                }
+                ReadNumber("Push")
 
             } else if (Second === `\t`){
                 let Third = next()
                 if (Third=== " "){ // reasearching how copy works, its like the exact same idea as push but different prefix
-                    
-                    let binary = ""
-                    let sign = next()
-
-                    while (pointer < code.length && peek() != `\n`){
-                        binary += next() === "\t" ? "1" : "0";
-                    }
-                    next()
-
-                    let number = parseInt(binary, 2)
-
-                    if (sign === "\t"){number*=-1}
-
-                    if (!isNaN(number) && binary.length>0){
-                        Instructions.push("Copy", number);
-                        InstructionVisualiser.textContent += `\nCopy ${number} `;
-                    } else {
-                        InstructionVisualiser.textContent += `\nCopy`;}
-
+                    ReadNumber("Copy")
                 } else if (Third === `\n`){
-                    console.log("Slide")
+                    ReadNumber("Slide")
                 }
             } else if (Second=== `\n`){
                 let Third = next()
