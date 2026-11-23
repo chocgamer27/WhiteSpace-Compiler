@@ -1,6 +1,6 @@
 <body>
 
-    <textarea id="CodeInput" placeholder="Input your Code here!"></textarea>
+    <textarea id="CodeInput" placeholder="Input your Code here!" style="height: 40%; width: 40%;"></textarea>
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
     <pre id="Visualise"></pre>
 
@@ -12,7 +12,7 @@
     // ~~1. simple interface and ui that works'~~
     // ~~1a. Make it so you can click tab in there~~
     // ~~2. get tabs and spaces (ignore everything else)~~
-    // 3. a way to see spaces and tabs (important else its hard to make programs)
+    // ~~3. a way to see spaces and tabs (important else its hard to make programs)~~~~~ half working, it shows T for tab, s,and l
     // 4. simple push stack, addition, subtraction, printing
     // 5. add more features
     // 6. make it look pretty
@@ -36,17 +36,34 @@
         Visualise();
     })
 
+
     btn.addEventListener('click', (event) => {
 
-        for (let i=0; i < CodeInput.value.length; i++){
+        let code = CodeInput.value.replace(/[^ \t\n]/g, "");
+        let pointer = 0;
 
-            let AsciCC = CodeInput.value[i].charCodeAt(0)
+        function next() {
+            return code[pointer++];
+        }
+        while (pointer < code.length){
+            if (next() === " " && next() === " ") {
+                let sign = next();
 
-            if (AsciCC == `9`){
-                console.log("T")
+                let binary = "";
 
-            } else if (AsciCC == `32`){
-                console.log("S")
+                while (pointer < code.length && code[pointer] !== "\n"){
+                    binary += code[pointer] === "\t" ? "1" : "0";
+                    pointer++;
+                }
+
+                pointer++;
+
+                let number = parseInt(binary, 2);
+
+                if (sign === "\t"){
+                    number*= -1;
+                }
+                console.log(number)
             }
         }
         
@@ -59,6 +76,7 @@
             filtered.replaceAll(" ", "S")
                 .replaceAll("\t", "T")
                 .replaceAll("\n", "L\n");
+        
     }
 
 </script>
