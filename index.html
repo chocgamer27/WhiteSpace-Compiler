@@ -18,14 +18,22 @@
     // 5. add more features
     // 6. make it look pretty
 
-    function next() {
+    function update(){
+        let code = CodeInput.value.replace(/[^ \t\n]/g, "");
+        let pointer = 0;
+        InstructionSet.textContent=""
+
+        function next() {
             return code[pointer++];
-    }
-        function update(){
+        }
+
         while (pointer < code.length){
+
             if (next() === " " && next() === " ") {
+
                 let sign = next();
                 let binary = "";
+
                 while (pointer < code.length && code[pointer] !== "\n"){
                     binary += code[pointer] === "\t" ? "1" : "0";
                     pointer++;
@@ -38,7 +46,11 @@
                 if (sign === "\t"){
                     number*= -1;
                 }
-                InstructionSet.textContent+=`\nPush ${number}`
+                if (number != NaN){
+                    InstructionSet.textContent+=`\nPush ${number}`
+                }else{
+                    InstructionSet.textContent+=`\nPush`
+                }
             }
         }
     }
@@ -62,10 +74,7 @@
 
     CodeInput.addEventListener('input', function() {
         Visualise();
-        let code = CodeInput.value.replace(/[^ \t\n]/g, "");
-        let pointer = 0;
         let instruction = 0;
-        InstructionSet.textContent=""
         update()
     })
 
