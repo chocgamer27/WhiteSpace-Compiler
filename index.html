@@ -67,6 +67,7 @@
                 while (pointer < code.length && peek() != `\n`){
                     binary += next() === "\t" ? "1" : "0";
                 }
+                next()
 
                 let number = parseInt(binary, 2)
                 if (sign === "\t"){
@@ -79,8 +80,26 @@
 
             } else if (Second === `\t`){
                 let Third = next()
-                if (Third=== " "){
-                    console.log("Copy")
+                if (Third=== " "){ // reasearching how copy works, its like the exact same idea as push but different prefix
+                    
+                    let binary = ""
+                    let sign = next()
+
+                    while (pointer < code.length && peek() != `\n`){
+                        binary += next() === "\t" ? "1" : "0";
+                    }
+                    next()
+
+                    let number = parseInt(binary, 2)
+
+                    if (sign === "\t"){number*=-1}
+
+                    if (!isNaN(number) && binary.length>0){
+                        Instructions.push("Copy", number);
+                        InstructionVisualiser.textContent += `\nCopy ${number} `;
+                    } else {
+                        InstructionVisualiser.textContent += `\nCopy`;}
+
                 } else if (Third === `\n`){
                     console.log("Slide")
                 }
