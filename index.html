@@ -1,6 +1,6 @@
 <body>
 
-    <textarea id="CodeInput" placeholder="Input your Code here!" style="height: 40%; width: 40%;"></textarea>
+    <textarea id="CodeInput" placeholder="Input your Code here!" style="height: 40%; width: 40%; resize: none;" ></textarea>
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
     <pre id="Visualise"></pre>
     <pre id="VStacks"></pre>
@@ -21,6 +21,7 @@
     // 5. add more features
     // 6. make it look pretty
 
+
     let Stacks = []
     let Instructions = []
 
@@ -30,7 +31,8 @@
 
     let CodeInput = document.getElementById("CodeInput")
 
-    let InstructionVisualiser = document.getElementById("InstructionVisualiser")    
+
+    let InstructionVisualiser = document.getElementById("InstructionVisualiser")   
 
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
@@ -63,20 +65,25 @@
 
             if (!isNaN(number) && binary.length>0){
                 Instructions.push(Instruction, number);
-                 InstructionVisualiser.textContent += `\n${Instruction} ${number} `;
+                InstructionVisualiser.textContent += `\n ${Instruction} ${number} `;
             } else {
-                InstructionVisualiser.textContent += `\n${Instruction}`;}
+                InstructionVisualiser.textContent += `\n ${Instruction}`;}
+        }
+
+        function SendInstruction(Instruction){
+            Instructions.push(Instruction)
+            InstructionVisualiser.textContent += `\n ${Instruction}`;
         }
 
 
         function StackManipulation (){ 
             let Second = next()
-            //" ": "Push",~~
-            //"\t ": "Copy",~~
+            //" ": "Push", ~~
+            //"\t ": "Copy", ~~
             //"\t\n": "Slide",~~
-            //"\n\t": "Swap",
-            //"\n\n": "Drop",
-            //"\n ": "Dup"
+            //"\n\t": "Swap", ~~
+            //"\n\n": "Drop", ~~
+            //"\n ": "Dup" ~~
 
             if (Second === " "){
                 ReadNumber("Push")
@@ -90,11 +97,32 @@
             } else if (Second=== `\n`){
                 let Third = next()
                 if (Third === `\t`){
-                    console.log("Swap")
+                    SendInstruction("Swap")
                 } else if (Third === `\n`){
-                    console.log("Drop")
+                    SendInstruction("Drop")
                 } else if (Third ===  " "){
-                    console.log("Dup")
+                    SendInstruction("Dup")
+                }
+            }
+        }
+
+        function Arithmetic(){
+            let Third = next()
+            if (third === " "){
+                let fourth = next()
+                if (fourth === " "){
+                    SendInstruction("Add")
+                } else if (fourth === `\t`){
+                    SendInstruction("Sub")
+                } else if (fourth === `\n`){
+                    SendInstruction("Mul")
+                }
+            } else if (third === `\t`){
+                let fourth = next()
+                if (fourth === " "){
+                    SendInstruction("Div")
+                } else if (fourth === `\t`){
+                    SendInstruction("Mod")
                 }
             }
         }
@@ -106,21 +134,12 @@
 
             if (first === " "){
                 StackManipulation()
-            } else if (first === "\t" && next() === " "){
-                
-                let operation = code.slice(pointer, pointer+2);
-                pointer +=2;
-
-                let operations = {
-                    "  ": "Add",
-                    " \t": "Sub",
-                    " \n": "Mul",
-                    "\t ": "Div",
-                    "\t\t": "Mod"
-                };
-                if (operations[operation]){
-                    Instructions.push(operations[operation]);
-                    InstructionVisualiser.textContent += `\n${operations[operation]}`;
+            } else if (first === "\t"){
+                let second = next()
+                if (second === " "){
+                    Arithmetic()
+                } else if (second === `\n`){
+                    // IO stuff
                 }
             }
 
@@ -159,12 +178,11 @@
         // Swap,
         // Drop -- (discard)
         // Math stuff
-        // add, sub, mult, div, mod
+        // add, sub, mul, div, mod
         
         
         while ( Instructions.length > 0 ){
-            console.log(Instructions[0])
-            console.log(Stacks)
+
             
         }
 
