@@ -240,9 +240,11 @@
             } else if (Instructions[0]==="Copy"){
                 if (Stacks.length>0){
                     Instructions.shift()
-                    Stacks.push(Stacks[Instructions[0]])
-                    Instructions.shift(0)
+                    Stacks.push(Stacks.slice().reverse()[Instructions[0]])
+                    Instructions.shift()
                 } else {
+                    Instructions.shift()
+                    Instructions.shift()
                     console.log("Stack size too small :(")
                 }
             } else if (Instructions[0]=== "Slide"){
@@ -262,6 +264,69 @@
             } else if (Instructions[0]=== "Dup"){
                 Instructions.shift()
                 Stacks.push(Stacks[Stacks.length - 1])
+            } else if (Instructions[0]=== "Add"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    let FirstNum = Stacks.pop()
+                    let SecondNum = Stacks.pop()
+                    Stacks.push(FirstNum+SecondNum)
+                } else {
+                    console.log("Not enough Stacks")
+                }
+            } else if (Instructions[0]=== "Sub"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    let FirstNum = Stacks.pop()
+                    let SecondNum = Stacks.pop()
+                    Stacks.push(SecondNum-FirstNum)
+                } else {
+                    console.log("Not enough Stacks")
+                }
+            } else if (Instructions[0]=== "Mul"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    let FirstNum = Stacks.pop()
+                    let SecondNum = Stacks.pop()
+                    Stacks.push(FirstNum*SecondNum)
+                } else {
+                    console.log("Not enough stacks")
+                }
+            } else if (Instructions[0]=== "Div"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    let FirstNum = Stacks.pop()
+                    let SecondNum = Stacks.pop()
+                    if (FirstNum!=0){
+                        Stacks.push(SecondNum/FirstNum)
+                    }
+                } else {
+                    console.log("Not enough Stacks")
+                }
+            } else if (Instructions[0]=== "Mod"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    let FirstNum = Stacks.pop()
+                    let SecondNum = Stacks.pop()
+                    if (FirstNum!=0){
+                        Stacks.push(SecondNum%FirstNum)
+                    }
+                } else {
+                    console.log("Not enough Stacks")
+                }
+            } else if (Instructions[0]=== "Store"){
+                Instructions.shift()
+                if (Stacks.length>1){
+                    Heap[Stacks[Stacks.length-1]] = Stacks[Stacks.length-2]
+                    Stacks.pop()
+                    Stacks.pop()
+                } else {
+                    console.log("Not enough Stacks")
+                }
+            } else if (Instructions[0]=== "Retrieve"){
+                Instructions.shift()
+                if (Stacks.length>0){
+                    Stacks.push(Heap[Stacks[Stacks.length-1]])
+                }
             }
         }
         for (let i=0; i < Stacks.length; i++){
