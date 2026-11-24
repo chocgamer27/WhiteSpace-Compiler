@@ -21,7 +21,7 @@
     // 5. add more features
     // 6. make it look pretty
 
-
+    let Heap = []
     let Stacks = []
     let Instructions = []
 
@@ -78,36 +78,30 @@
 
         function StackManipulation (){ 
             let Second = next()
-            //" ": "Push", ~~
-            //"\t ": "Copy", ~~
-            //"\t\n": "Slide",~~
-            //"\n\t": "Swap", ~~
-            //"\n\n": "Drop", ~~
-            //"\n ": "Dup" ~~
 
             if (Second === " "){
                 ReadNumber("Push")
             } else if (Second === `\t`){
-                let Third = next()
-                if (Third=== " "){
+                let third = next()
+                if (third=== " "){
                     ReadNumber("Copy")
-                } else if (Third === `\n`){
+                } else if (third === `\n`){
                     ReadNumber("Slide")
                 }
             } else if (Second=== `\n`){
-                let Third = next()
-                if (Third === `\t`){
+                let third = next()
+                if (third === `\t`){
                     SendInstruction("Swap")
-                } else if (Third === `\n`){
+                } else if (third === `\n`){
                     SendInstruction("Drop")
-                } else if (Third ===  " "){
+                } else if (third ===  " "){
                     SendInstruction("Dup")
                 }
             }
         }
 
         function Arithmetic(){
-            let Third = next()
+            let third = next()
             if (third === " "){
                 let fourth = next()
                 if (fourth === " "){
@@ -127,6 +121,17 @@
             }
         }
 
+        function HeapAccess(){
+            let third = next()
+            if (third === " "){
+                SendInstruction("Store")
+            } else if (third === `\t`){
+                SendInstruction("Retrieve")
+            }
+
+        }
+
+
 
         while (pointer < code.length){
 
@@ -138,8 +143,10 @@
                 let second = next()
                 if (second === " "){
                     Arithmetic()
+                } else if (second === `\t`){
+                    HeapAccess()
                 } else if (second === `\n`){
-                    // IO stuff
+                    // I/O stuff
                 }
             }
 
