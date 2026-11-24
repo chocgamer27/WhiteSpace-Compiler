@@ -16,7 +16,7 @@
     // ~~2. get tabs and spaces (ignore everything else)~~
     // ~~3. a way to see spaces and tabs (important else its hard to make programs)~~~~~ half working, it shows T for tab, s,and l
     // ~~4a. simple push~~
-    // 4b. Side mission gonna add stacks or try to so I can inplement addition and what not :D
+    // 4b. Side mission gonna add Stacks or try to so I can inplement addition and what not :D
     // 4c, addition, subtraction, printing
     // 5. add more features
     // 6. make it look pretty
@@ -189,8 +189,8 @@
         while (pointer < code.length){
             let first = next();
 
-            if (first === " " && previous(2) !== `\n`){
-                StackManipulation()
+            if (first === " "){
+                StackManipulation();
             } else if (first === "\t"){
                 let second = next()
                 if (second === " "){
@@ -231,9 +231,41 @@
 
 
     btn.addEventListener('click', (event) => {
+        VStacks.textContent =""
         while ( Instructions.length > 0 ){
+            if (Instructions[0]=== "Push"){
+                Instructions.shift()
+                Stacks.push(Instructions[0])
+                Instructions.shift()
+            } else if (Instructions[0]==="Copy"){
+                if (Stacks.length>0){
+                    Instructions.shift()
+                    Stacks.push(Stacks[Instructions[0]])
+                    Instructions.shift(0)
+                } else {
+                    console.log("Stack size too small :(")
+                }
+            } else if (Instructions[0]=== "Slide"){
+                Instructions.shift()
+                Stacks.splice(Stacks.length - 1 - Instructions[0], Instructions[0])
+                Instructions.shift()
+            } else if (Instructions[0]=== "Swap"){
+                Instructions.shift()
+                let FirstNum = Stacks.pop()
+                let SecondNum = Stacks.pop()
+                Stacks.push(FirstNum)
+                Stacks.push(SecondNum)
 
-            
+            } else if (Instructions[0]=== "Drop"){
+                Instructions.shift()
+                Stacks.pop()
+            } else if (Instructions[0]=== "Dup"){
+                Instructions.shift()
+                Stacks.push(Stacks[Stacks.length - 1])
+            }
+        }
+        for (let i=0; i < Stacks.length; i++){
+            VStacks.textContent += `[${Stacks[i]}]`
         }
 
     })
