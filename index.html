@@ -50,6 +50,9 @@
         function peek() {
             return code[pointer]
         }
+        function previous(n=1){
+            return  code[pointer -n]
+        }
 
         function ReadNumber(Instruction){
             let binary = ""
@@ -79,7 +82,8 @@
         function StackManipulation (){ 
             let Second = next()
 
-            if (Second === " "){
+            if (Second === " "){ 
+
                 ReadNumber("Push")
             } else if (Second === `\t`){
                 let third = next()
@@ -131,13 +135,61 @@
 
         }
 
+        function FlowControl(){
+            let second = next()
+            if (second === " "){
+                let third = next()
+                if (third === " "){
+                    ReadNumber("Mark");
+                } else if (third === `\t`){
+                    ReadNumber("Call")
+                } else if (third === `\n`){
+                    ReadNumber("Jmp")
+                }
+            } else if (second === `\t`){
+                let third = next()
+                if (third === " "){
+                    ReadNumber("Jmp0")
+                } else if (third === `\t`){
+                    ReadNumber("Jmp-")
+                } else if (third === `\n`){
+                    SendInstruction("Return")
+                }
+            } else if (second === `\n`){
+                let third = next()
+                if (third === `\n`){
+                    SendInstruction("End")
+                }
+            }
+        }
+
+        function IOparser(){
+            let third = next()
+            if (third === " "){
+                let fourth = next()
+                if (fourth === " "){
+                    SendInstruction("OutChar")
+                } else if (fourth === `\t`){
+                    SendInstruction("OutNum")
+                }
+            } else if (third ===  `\t`){
+                let fourth = next()
+                if (fourth === " "){
+                    SendInstruction("InpChar")
+                } else if (fourth === `\t`){
+                    SendInstruction("InpNum")
+                }
+            }
+            
+
+        }
+
 
 
         while (pointer < code.length){
-
             let first = next();
 
-            if (first === " "){
+            if (first === " " && previous(2) !== `\n`){
                 StackManipulation()
             } else if (first === "\t"){
                 let second = next()
@@ -146,8 +198,10 @@
                 } else if (second === `\t`){
                     HeapAccess()
                 } else if (second === `\n`){
-                    // I/O stuff
+                    IOparser()
                 }
+            } else if (first === `\n`){
+                FlowControl()
             }
 
         }
@@ -176,18 +230,7 @@
 
 
 
-    btn.addEventListener('click', (event) => { // --- EXECUTOR
-        // Stack Management
-        // Push, (number)
-        // Copy, (number)
-        // Slide, (number)
-        // Dup,
-        // Swap,
-        // Drop -- (discard)
-        // Math stuff
-        // add, sub, mul, div, mod
-        
-        
+    btn.addEventListener('click', (event) => {
         while ( Instructions.length > 0 ){
 
             
