@@ -4,7 +4,7 @@
     <button id="RunCode" style="height: 100px; width: 100px;">RUN</button>
     <pre id="Visualise"></pre>
     <pre id="VStacks"></pre>
-    <pre id="InstructionVisualiser" style="background-color: rgb(187, 187, 187); color: rgb(0, 0, 0); position: absolute; right: 1%; top: 0.1%; height: 45%; width: 15%; font-size: 15px; font-family: cursive;"></pre>
+    <pre id="InstructionVisualiser" style="background-color: rgb(187, 187, 187); color: rgb(0, 0, 0); position: absolute; right: 5%; top: 0.1%; height: 45%; width: 15%; font-size: 15px; font-family: cursive;"></pre>
 
     <textarea id="Output" style="resize: none; height: 20%; width: 15%;" placeholder="OutPut for Code!"></textarea>
     <textarea id="Inputs" style="resize: none; height: 20%; width: 15%;"; placeholder="Inputs Here!"></textarea>
@@ -23,9 +23,9 @@
     // 5. add more features
     // 6. make it look pretty
 
-    let Heap = []
-    let Stacks = []
-    let Instructions = []
+    let Heap = [];
+    let Stacks = [];
+    let Instructions = [];
 
     let btn = document.getElementById("RunCode")
 
@@ -33,15 +33,19 @@
 
     let CodeInput = document.getElementById("CodeInput")
 
-    let InstructionVisualiser = document.getElementById("InstructionVisualiser")   
+    let InstructionVisualiser = document.getElementById("InstructionVisualiser")  
+    let LabelIds = [];
 
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
         let pointer = 0;
-        let LabelIndex=0
+        let LabelIndex=0;
+        let CallIndex=0;
+        let LabelIds = [];
+        let Heap = [];
+        let Stacks = [];
+        let Instructions = [];
         InstructionVisualiser.textContent=""
-        Instructions = []
-        Stacks = []
 
         function next() {
             return code[pointer++];
@@ -59,6 +63,7 @@
         function ReadNumber(Instruction){
             let binary = ""
             let sign = next()
+            let i=0
             while (pointer < code.length && peek() != `\n`){
                 binary += next() === "\t" ? "1" : "0";
             }
@@ -67,8 +72,40 @@
             let number = parseInt(binary, 2)
 
             if (sign === "\t"){number*=-1}
+            //Instructions.push(`${Instruction}_${LabelIndex}`)
+            //InstructionVisualiser.textContent += `\n ${Instruction}_${LabelIndex}`;
+            //LabelIndex++
+            if (Instruction === "Label" && !isNaN(number) && binary.length>0){
 
-            if (!isNaN(number) && binary.length>0){
+                let found = false;
+                for (let i=0; LabelIds.length>i; i++){
+                    if (LabelIds[i]===number){
+                        found = true
+                        InstructionVisualiser.textContent += `\n ${Instruction} (${number} already exists??)`
+                        break
+                    }
+                }
+                if (!found){
+                    InstructionVisualiser.textContent += `\n ${Instruction} ${LabelIds.length}`
+                    LabelIds.push(number)
+                }
+
+            } else if (Instruction === "Call" && !isNaN(number) && binary.length>0){
+                let i=0
+                for (let i=0; LabelIds.length>i && LabelIds[i]!==number; i++){
+                    Instructions.push(Instruction, number);
+                    InstructionVisualiser.textContent += `\n ${Instruction}_${i} `;
+                }
+                if (i===LabelIds.length){
+                    InstructionVisualiser.textContent += `\n ${Instruction} (${number} isnt a valid id) `;
+                }
+            } else if (["Jmp", "Jz", "Jn"].includes(Instruction) ){
+                if (LabelIds.includes(number)){
+                    let id = LabelIds.indexOf(number)
+                    InstructionVisualiser.textContent += `\n ${Instruction} ${id}`
+                    Instructions.push(Instruction, number)
+                }
+            }else if (!isNaN(number) && binary.length>0){
                 Instructions.push(Instruction, number);
                 InstructionVisualiser.textContent += `\n ${Instruction} ${number} `;
             } else {
@@ -76,15 +113,8 @@
         }
 
         function SendInstruction(Instruction){
-            if (Instruction === "Label"){
-                // do some different stuff so it displays label_0,1,2,3 etc
-                Instructions.push(`${Instruction}_${LabelIndex}`)
-                InstructionVisualiser.textContent += `\n ${Instruction}_${LabelIndex}`;
-                LabelIndex++
-            } else {
-                Instructions.push(Instruction)
-                InstructionVisualiser.textContent += `\n ${Instruction}`;
-            }
+            Instructions.push(Instruction)
+            InstructionVisualiser.textContent += `\n ${Instruction}`;
         }
 
 
@@ -149,7 +179,7 @@
             if (second === " "){
                 let third = next()
                 if (third === " "){
-                    SendInstruction("Label");
+                    ReadNumber("Label");
                 } else if (third === `\t`){
                     ReadNumber("Call")
                 } else if (third === `\n`){
@@ -158,9 +188,9 @@
             } else if (second === `\t`){
                 let third = next()
                 if (third === " "){
-                    ReadNumber("Jmp0")
+                    ReadNumber("Jz")
                 } else if (third === `\t`){
-                    ReadNumber("Jmp-")
+                    ReadNumber("Jn")
                 } else if (third === `\n`){
                     SendInstruction("Return")
                 }
