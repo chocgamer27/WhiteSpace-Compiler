@@ -39,12 +39,11 @@
     function update(){
         let code = CodeInput.value.replace(/[^ \t\n]/g, "");
         let pointer = 0;
-        let LabelIndex=0;
         let CallIndex=0;
-        let LabelIds = [];
-        let Heap = [];
-        let Stacks = [];
-        let Instructions = [];
+        LabelIds = [];
+        Heap = [];
+        Stacks = [];
+        Instructions = [];
         InstructionVisualiser.textContent=""
 
         function next() {
@@ -60,19 +59,6 @@
             return  code[pointer -n]
         }
         
-        function skim(){
-            // cough
-            // prescan
-            while (pointer < code.length){
-                let first = next();
-                if (first === `\n`){
-                    ispre = true
-                    FlowControl(ispre)
-                }
-
-            }
-        }
-
 
         function ReadNumber(Instruction){
             let binary = ""
@@ -92,37 +78,21 @@
                 for (let i=0; LabelIds.length>i; i++){
                     if (LabelIds[i]===number){
                         found = true
-                        if (!ispre){
-                            InstructionVisualiser.textContent += `\n ${Instruction} (${number} already exists??)`
-                        }
+                        InstructionVisualiser.textContent += `\n ${Instruction} (${number} already exists??)`
                         break
                     }
                 }
                 if (!found){
-                    if (!ispre){
-                        InstructionVisualiser.textContent += `\n ${Instruction} ${LabelIds.length}`                        
-                    }
+                    InstructionVisualiser.textContent += `\n ${Instruction} ${LabelIds.length}`                        
                     LabelIds.push(number)
                 }
 
             } else if (Instruction === "Call" && !isNaN(number) && binary.length>0){ 
-                console.log(`${LabelIds.includes(number)} for ${number} being in`)
                 console.log(LabelIds)
-                if (LabelIds.includes(number)){
-                    let i = LabelIds.indexOf(number)
-                    Instructions.push(Instruction, i);
-                    InstructionVisualiser.textContent += `\n ${Instruction}_${i} `;
-                } else {
-                    InstructionVisualiser.textContent += `\n ${Instruction} (the id ${number} wasnt found?) `;                
-                }
-            
+                Unresolved++
 
             } else if (["Jmp", "Jz", "Jn"].includes(Instruction) ){
-                if (LabelIds.includes(number)){
-                    let id = LabelIds.indexOf(number)
-                    InstructionVisualiser.textContent += `\n ${Instruction} ${id}`
-                    Instructions.push(Instruction, number)
-                }
+                Unresolved++
             }else if (!isNaN(number) && binary.length>0){
                 Instructions.push(Instruction, number);
                 InstructionVisualiser.textContent += `\n ${Instruction} ${number} `;
@@ -192,18 +162,18 @@
 
         }
 
-        function FlowControl(pre){
+        function FlowControl(){
             let second = next()
             if (second === " "){
                 let third = next()
                 if (third === " "){
                     ReadNumber("Label");
-                } else if (third === `\t` && !pre){
+                } else if (third === `\t`){
                     ReadNumber("Call")
-                } else if (third === `\n` && !pre){
+                } else if (third === `\n`){
                     ReadNumber("Jmp")
                 }
-            } else if (second === `\t` && !pre){
+            } else if (second === `\t`){
                 let third = next()
                 if (third === " "){
                     ReadNumber("Jz")
@@ -212,7 +182,7 @@
                 } else if (third === `\n`){
                     SendInstruction("Return")
                 }
-            } else if (second === `\n` && !pre){
+            } else if (second === `\n`){
                 let third = next()
                 if (third === `\n`){
                     SendInstruction("End")
@@ -256,10 +226,8 @@
                     IOparser()
                 }
             } else if (first === `\n`){
-                ispre = false
-                FlowControl(ispre)
+                FlowControl()
             }
-
         }
     }
 
